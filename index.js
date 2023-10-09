@@ -1,11 +1,17 @@
+//will get all the onvfig from env file
 require("dotenv").config();
-const express = require('express')
-const app = express()
+
+const express = require("express");
+
+//create application
+const app = express();
 
 const print = require("./controller");
 
-app.get('/', print);
+//http method and controller method
+app.get("/", print);
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`Listening to port ${process.env.PORT}`)
-})
+//will run the app
+app.listen(process.env.PORT, () => {
+  console.log(`Listening to port ${process.env.PORT}`);
+});
