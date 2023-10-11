@@ -39,7 +39,7 @@ jobs: #instructions for each step
 
   deploy:
     docker:
-      - image: cimg/node:16-10
+      - image: cimg/node:16.10
     steps:
       - setup_remote_docker
       - heroku/install #installs heroku cli for our run command
