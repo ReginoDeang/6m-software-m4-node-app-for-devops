@@ -1,10 +1,10 @@
 version: 2.1
-orbs: #something like dependency
+orbs: #packages
   node: circleci/node@5.0.1
-  docker: circleci/docker@2.1.4 #allows us to use the docker commands
-  heroku: circleci/heroku@2.0.0
+  docker: circleci/docker@2.1.4 #allows us to use docker orb's commands
+  heroku: circleci/heroku@2.0.0 #allows us to use heroku orb's commands
 jobs: #instructions for each step
-  build: #build the application, ie installa dependencies
+  build: #build the application, ie install dependencies
     docker: #container to handle to steps
       - image: cimg/node:16.10
     steps:
@@ -25,9 +25,9 @@ jobs: #instructions for each step
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: docker/docker #State the environment that we're going to use, in this casewe let docker decide the defualt
+    executor: docker/docker #State the environment that we're use
     steps:
-      - setup_remote_docker #THis allows us to run docker commands just in case
+      - setup_remote_docker #This allows use to run docker commands just in case
       - checkout
       - docker/check
       - docker/build:
@@ -46,20 +46,25 @@ jobs: #instructions for each step
       - checkout
       - run:
           name: Heroku Container Push #the name of the group of commands we are running
-          command: heroku container:login
-            heroku contrainer:push web -a reginodeang-su-devops
+          command: |
+            heroku container:login
+            heroku container:push web -a reginodeang-su-devops 
             heroku container:release web -a reginodeang-su-devops
+        #The push command pushes the image to heroku's container registry
+        #The release command deploys the image from heroku's container registry
 
-workflows: #defines how each job would run and relate to each toher and any other dependent states
+workflows: #defines how each job would run and relate to each other and
+  # any other dependent states (ex. only run if pushed to main branch)
   simple_workflow:
     jobs:
-      - build
-      - test:
+      - build #1st job
+      - test: #2nd job
           requires:
             - build
-      - build-and-push:
+      - build-and-push: #3rd job
           requires:
             - test
       - deploy:
           requires:
             - build-and-push
+#mini-exercise - add the deploy job so that it depends on build-and-push job
