@@ -34,10 +34,14 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check
+      # - run:
+      #     name: Display Git Tag
+      #     command: |
+      #       echo "Git Tag: $CIRCLE_TAG"
       - run:
-          name: Display Git Tag
-          command: |
-            echo "Git Tag: $CIRCLE_TAG"
+          name: List Environment Variables
+          command: env
+
       - docker/build:
           image: reginodeang/education-space
           tag: v$CIRCLE_TAG
