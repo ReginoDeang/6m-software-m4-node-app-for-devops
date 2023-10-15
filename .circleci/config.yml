@@ -29,7 +29,7 @@ jobs:
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: docker/default
+    executor: my-docker-executor
     steps:
       - setup_remote_docker
       - checkout
@@ -61,6 +61,7 @@ jobs:
             heroku container:login
             heroku container:push web -a reginodeang-su-devops
             heroku container:release web -a reginodeang-su-devops
+
 workflows:
   version: 2
   simple_workflow:
