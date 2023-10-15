@@ -35,14 +35,19 @@ jobs:
       - checkout
       - docker/check
       - run:
-          name: Debug Git Tag
-          command: echo "Git Tag: << pipeline.git.tag >>"
+          name: Set Git Tag Environment Variable
+          command: echo "CIRCLE_GIT_TAG=v$CIRCLE_TAG" >> $BASH_ENV
       - docker/build:
           image: reginodeang/education-space
-          tag: << pipeline.git.tag >>
+          tag: v$CIRCLE_TAG
       - docker/push:
           image: reginodeang/education-space
-          tag: << pipeline.git.tag >>
+          tag: v$CIRCLE_TAG
+      - run:
+          name: Display Git Tag
+          command: |
+            echo "Git Tag: $CIRCLE_GIT_TAG"
+
   deploy:
     docker:
       - image: cimg/node:16.10
