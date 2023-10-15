@@ -29,12 +29,14 @@ jobs:
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: my-docker-executor
+    executor: docker/default
     steps:
       - setup_remote_docker
       - checkout
       - docker/check
-      - echo "Git Tag: << pipeline.git.tag >>"
+      - run:
+          name: Debug Git Tag
+          command: echo "Git Tag: << pipeline.git.tag >>"
       - docker/build:
           image: reginodeang/education-space
           tag: << pipeline.git.tag >>
