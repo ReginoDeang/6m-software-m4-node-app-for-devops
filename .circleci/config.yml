@@ -4,7 +4,7 @@ orbs:
   docker: circleci/docker@2.1.4
   heroku: circleci/heroku@2.0.0
 executors:
-  docker/default:
+  my-docker-executor:
     docker:
       - image: cimg/base:stable
 jobs:
@@ -29,7 +29,7 @@ jobs:
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: docker/default
+    executor: my-docker-executor
     steps:
       - setup_remote_docker
       - checkout
