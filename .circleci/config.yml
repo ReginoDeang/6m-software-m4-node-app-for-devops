@@ -84,5 +84,5 @@ workflows: #defines how each job would run and relate to each other and
       #     requires:
       #       - build-and-push
       - scan:
-          require:
+          requires:
             - build
