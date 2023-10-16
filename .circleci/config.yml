@@ -38,20 +38,20 @@ jobs: #instructions for each step
           image: reginodeang/education-space
           tag: 1.0.1
 
-    scan:
-      docker:
-        - image: cimg/node:16.10
-      environment:
-        IMAGE_NAME: reginodeang/education-space #the IMAGE_NAME is a variable we could use in our jobs/steps
-      steps:
-        - checkout
-        - setup_remote_docker
-        - docker/check
-        - run: docker build -t $IMAGE_NAME .
+  scan:
+    docker:
+      - image: cimg/node:16.10
+    environment:
+      IMAGE_NAME: reginodeang/education-space #the IMAGE_NAME is a variable we could use in our jobs/steps
+    steps:
+      - checkout
+      - setup_remote_docker
+      - docker/check
+      - run: docker build -t $IMAGE_NAME .
         # (. = current directory)
         # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
-        - snyk/scan:
-            docker-image-name: $IMAGE_NAME
+      - snyk/scan:
+          docker-image-name: $IMAGE_NAME
 
   # deploy:
   #   docker:
