@@ -3,7 +3,7 @@ orbs: #packages
   node: circleci/node@5.0.1
   docker: circleci/docker@2.1.4 #allows us to use docker orb's commands
   heroku: circleci/heroku@2.0.0 #allows us to use heroku orb's commands
-  snyk: snyk/snyk@0.0.9
+  snyk: snyk/snyk@1.5.0 #3rd part orb of snyk
 jobs: #instructions for each step
   build: #build the application, ie install dependencies
     docker: #container to handle to steps
