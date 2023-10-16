@@ -15,7 +15,7 @@ describe("the print function", () => {
     targetFn(mockReq, mockRes);
     //if the response is different, test will fail
     expect(mockRes.send).toHaveBeenCalledWith(
-      "Hello I am Regino and I successfully deployed my app in Heroku!!yodelayheehoo"
+      "Hellooo I am Regino and I successfully deployed my app in Heroku!!yodelayheehoo"
     ); // If you change this value, the test will fail.
   });
 });
