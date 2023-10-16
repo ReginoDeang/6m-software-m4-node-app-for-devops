@@ -1,18 +1,15 @@
 version: 2.1
-orbs:
+orbs: #packages
   node: circleci/node@5.0.1
-  docker: circleci/docker@2.1.4
-  heroku: circleci/heroku@2.0.0
-executors:
-  my-docker-executor:
-    docker:
-      - image: cimg/base:stable
-jobs:
-  build:
-    docker:
+  docker: circleci/docker@2.1.4 #allows us to use docker orb's commands
+  heroku: circleci/heroku@2.0.0 #allows us to use heroku orb's commands
+  snyk: snyk/snyk@0.0.9
+jobs: #instructions for each step
+  build: #build the application, ie install dependencies
+    docker: #container to handle to steps
       - image: cimg/node:16.10
     steps:
-      - checkout
+      - checkout #copies the working directory of the project
       - node/install-packages:
           pkg-manager: npm
       - run: |
@@ -29,60 +26,63 @@ jobs:
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: my-docker-executor
+    executor: docker/docker #State the environment that we're use
     steps:
-      - setup_remote_docker
+      - setup_remote_docker #This allows use to run docker commands just in case
       - checkout
       - docker/check
-      - run:
-          name: Set Git Tag Environment Variable
-          command: echo "CIRCLE_GIT_TAG=v$CIRCLE_TAG" >> $BASH_ENV
       - docker/build:
           image: reginodeang/education-space
-          tag: v$CIRCLE_TAG
+          tag: 1.0.1
       - docker/push:
           image: reginodeang/education-space
-          tag: v$CIRCLE_TAG
-      - run:
-          name: Display Git Tag
-          command: |
-            echo "Git Tag: $CIRCLE_GIT_TAG"
+          tag: 1.0.1
 
-  deploy:
-    docker:
-      - image: cimg/node:16.10
-    steps:
-      - setup_remote_docker
-      - heroku/install
-      - checkout
-      - run:
-          name: Heroku Container Push
-          command: |
-            heroku container:login
-            heroku container:push web -a reginodeang-su-devops
-            heroku container:release web -a reginodeang-su-devops
+    scan:
+      docker:
+        - image: cimg/node:16.10
+      environment:
+        IMAGE_NAME: reginodeang/education-space #the IMAGE_NAME is a variable we could use in our jobs/steps
+      steps:
+        - checkout
+        - setup_remote_docker
+        - docker/check
+        - run: docker build -t $IMAGE_NAME .
+        # (. = current directory)
+        # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
+        - snyk/scan:
+            docker-image-name: $IMAGE_NAME
 
-workflows:
-  version: 2
+  # deploy:
+  #   docker:
+  #     - image: cimg/node:16.10
+  #   steps:
+  #     - setup_remote_docker
+  #     - heroku/install #installs heroku cli for our run command
+  #     - checkout
+  #     - run:
+  #         name: Heroku Container Push #the name of the group of commands we are running
+  #         command: |
+  #           heroku container:login
+  #           heroku container:push web -a reginodeang-su-devops
+  #           heroku container:release web -a reginodeang-su-devops
+  #       #The push command pushes the image to heroku's container registry
+  #       #The release command deploys the image from heroku's container registry
+
+workflows: #defines how each job would run and relate to each other and
+  # any other dependent states (ex. only run if pushed to main branch)
   simple_workflow:
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - main
-      - test:
-          filters:
-            branches:
-              only:
-                - main
-      - build-and-push:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-      - deploy:
+      - build #1st job
+      - test: #2nd job
           requires:
-            - build-and-push
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+            - build
+      - build-and-push: #3rd job
+          requires:
+            - test
+      # - deploy:
+      #     requires:
+      #       - build-and-push
+      - scan:
+          require:
+            - build
