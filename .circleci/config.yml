@@ -31,10 +31,10 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
-          image: reginodeangjr/education-space
+          image: reginodeang/education-space
           tag: <<pipeline.git.tag>>
       - docker/push:
-          image: reginodeangjr/education-space
+          image: reginodeang/education-space
           tag: <<pipeline.git.tag>>
 
   scan:
