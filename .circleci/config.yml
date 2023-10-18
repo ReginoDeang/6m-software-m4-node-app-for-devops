@@ -49,9 +49,10 @@ workflows:
           filters:
             branches:
               only: main
-      - build-and-push: #this should run only if a tag is pushed, not if a branch is pushed
+      - build-and-push: #This should run only if a tag is pushed, not if a branch is pushed
           filters:
             tags:
-              only: /^v.*/ #only considers tags starting with v (ex. v1.0.2 etc...)
+              only: /^v.*/ #only considers tags starting with v (ex. v1.0.2)
             branches:
               ignore: /.*/ #ignores all branches
+
