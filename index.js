@@ -13,5 +13,5 @@ app.get("/", print);
 
 //will run the app
 app.listen(process.env.PORT, () => {
-  console.log(`Listening to port ${process.env.PORT}`);
+  console.log(`Listening to port ${process.env.PORT} or default port`);
 });
