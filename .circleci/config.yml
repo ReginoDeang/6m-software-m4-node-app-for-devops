@@ -56,3 +56,6 @@ workflows:
             branches:
               ignore: /.*/ #ignores all branches
 
+      - scan:
+          requires:
+            - build

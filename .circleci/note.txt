@@ -1,0 +1,6 @@
+pipeline.gt.tag - the name iof the git tag that was pushed to trigger the pipeline. if the pipeline was not triggered by a tag, then this is the empty string.
+
+only: /^v.*/ - filters all the tags that start with v ^v.* is a regular expression or regex(
+  get only ^v.* which corresponds to get all starting with v)
+
+  https://regex101.com/r/nI8xB8/1
